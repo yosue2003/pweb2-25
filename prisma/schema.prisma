@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model DifficultyLevel {
+  id            Int       @id @default(autoincrement())
+  name          String
+  numericLevel  Int
+  description   String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  questions     Question[]
+}
+
+model AgeRange {
+  id          Int       @id @default(autoincrement())
+  name        String
+  minAge      Int
+  maxAge      Int
+  description String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  questions   Question[]
+}
+
+model Question {
+  id                Int              @id @default(autoincrement())
+  text              String
+  difficultyLevelId Int
+  ageRangeId        Int
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  difficultyLevel   DifficultyLevel  @relation(fields: [difficultyLevelId], references: [id])
+  ageRange          AgeRange         @relation(fields: [ageRangeId], references: [id])
+}
